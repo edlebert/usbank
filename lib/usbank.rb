@@ -15,24 +15,21 @@ class USBank
     @agent = Mechanize.new
 
     page = @agent.get 'https://www4.usbank.com/internetBanking/RequestRouter?requestCmdId=DisplayLoginPage'
-    form = page.form_with :name => 'logon'
-    form['USERID'] = username
+    form = page.forms.first
+    form['PersonalId'] = username
     page = form.submit 
 
     form = page.forms.first
     question = (challenges).keys.find { |question| page.body.include? question }
     raise 'Challenge question not found' unless question
-    form["CHALLENGEANSWER"] = challenges[question]
+    form["StepUpShieldQuestion.Answer"] = challenges[question]
     page = form.submit
     
     form = page.forms.first
-    form["PSWD"] = password
+    form["password"] = password
     page = form.submit
 
-    raise "SSO redirect not found after password submission." unless page.body =~ /MM SSO/i && page.forms.any?
-    page = page.forms.first.submit
-
-    raise "Dashboard not found after SSO redirect." unless page.body =~ /U.S. Bank - Customer Dashboard/i
+    raise "Accounts page not found after password submit." unless page.body =~ /My Accounts/i
     @dashboard_url = page.uri
   end
 

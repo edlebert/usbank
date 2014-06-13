@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name    = 'usbank'
-  gem.version = '0.0.0'
+  gem.version = '0.1.0'
   gem.date    = Date.today.to_s
 
   gem.summary = "a gem to fetch transaction data from usbank"
